@@ -31,7 +31,7 @@ class _HomeCalculatorState extends State<HomeCalculator> {
   String proportionalPrice = "";
   List<PriceAmountUnit> proportionalPrices = <PriceAmountUnit>[];
 
-  _calculate() {
+  void calculate() {
     setState(() {
       FocusScope.of(context).unfocus();
 
@@ -63,9 +63,6 @@ class _HomeCalculatorState extends State<HomeCalculator> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Calculadora de Proporções'),
-      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -83,44 +80,21 @@ class _HomeCalculatorState extends State<HomeCalculator> {
               child: ListView(
                 children: [
                   Container(
-                    width: 250,
+                    width: double.infinity,
                     child: Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              child: InputCard(
-                                  this.viewModel,
-                                  this.priceSourceCtrl,
-                                  this.amountSourceCtrl,
-                                  this.amountProportionalCtrl),
-                            ), //CARD Container
-
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  0.0, 0.0, 16.5, 0.0),
-                              child: Container(
-                                  width: double.infinity,
-                                  child: Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: ButtonTheme(
-                                      minWidth:
-                                          MediaQuery.of(context).size.width /
-                                              2.3,
-                                      height: 50,
-                                      child: RaisedButton(
-                                        child: const Icon(Icons.add),
-                                        onPressed: () {
-                                          this._calculate();
-                                        },
-                                      ),
-                                    ),
-                                  )),
-                            ), //BUTTON
-                          ],
-                        ),
+                      Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: InputCard(
+                                this.viewModel,
+                                this.priceSourceCtrl,
+                                this.amountSourceCtrl,
+                                this.amountProportionalCtrl,
+                                this.calculate),
+                          ), //CARD Container
+                       //BUTTON
+                        ],
                       ),
 
                       Padding(

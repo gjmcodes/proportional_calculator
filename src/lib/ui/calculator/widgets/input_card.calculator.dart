@@ -11,13 +11,15 @@ class InputCard extends StatefulWidget {
   final MoneyMaskedTextController amountProportionalCtrl;
 
   final HomeCalculatorVM viewModel;
+  final Function calculateCallback;
 
   InputCard(this.viewModel, this.priceSourceCtrl, this.amountSourceCtrl,
-      this.amountProportionalCtrl);
+      this.amountProportionalCtrl, this.calculateCallback);
 
   @override
   _InputCardState createState() => _InputCardState(
-      viewModel, priceSourceCtrl, amountSourceCtrl, amountProportionalCtrl);
+      viewModel, priceSourceCtrl, amountSourceCtrl, amountProportionalCtrl
+  , calculateCallback);
 }
 
 class _InputCardState extends State<InputCard> {
@@ -25,10 +27,12 @@ class _InputCardState extends State<InputCard> {
   final MoneyMaskedTextController amountSourceCtrl;
   final MoneyMaskedTextController amountProportionalCtrl;
 
-  HomeCalculatorVM viewModel;
+  final HomeCalculatorVM viewModel;
+  final Function calculateCallback;
+
 
   _InputCardState(this.viewModel, this.priceSourceCtrl, this.amountSourceCtrl,
-      this.amountProportionalCtrl);
+      this.amountProportionalCtrl, this.calculateCallback);
 
   final List<MeasureUnit> _units = MeasureUnit.internationalUnits;
 
@@ -78,91 +82,123 @@ class _InputCardState extends State<InputCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height / 2,
-              width: MediaQuery.of(context).size.width,
-              child: Card(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(7.5, 0.0, 7.5, 0.0),
+      child: Container(
+        height: MediaQuery.of(context).size.height / 2,
+        width: MediaQuery.of(context).size.width,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.elliptical(MediaQuery.of(context).size.width, 100.0)
+              )),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              InfoCircle('R\$'),
-                              CardTextInput(
-                                'Valor do produto',
-                                priceSourceCtrl,
-                                width: MediaQuery.of(context).size.width / 1.5,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              InfoCircle(_selectedUnit),
-                              CardTextInput(
-                                'Medida',
-                                amountSourceCtrl,
-                                width: MediaQuery.of(context).size.width / 3,
-                              ),
-                              SelectUnitDropDown(this._selectedUnit,
-                                  this._units, this._updateSelectedUnit),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              InfoCircle(_selectedProportionalUnit),
-                              CardTextInput(
-                                'Medida de comparação',
-                                amountProportionalCtrl,
-                                width: MediaQuery.of(context).size.width / 3,
-                              ),
-                              SelectUnitDropDown(this._selectedUnit, this._units
-                                  , this._updateSelectedProportionalUnit),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: new BoxDecoration(
-                                  color: Colors.lightBlue,
-                                  borderRadius: BorderRadius.circular(10.0)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  InfoCircle(
-                                    '$_selectedUnit / R\$',
-                                    width: 62.5,
-                                    height: 62.5,
-                                  ),
-                                  CardReadOnlyText(
-                                    'Preço proporcional',
-                                    this.viewModel.getProportionalResult(),
-                                    width:
-                                        MediaQuery.of(context).size.width / 2,
-                                  ),
-                                ],
-                              ),
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            InfoCircle('R\$'),
+                            CardTextInput(
+                              'Valor do produto',
+                              priceSourceCtrl,
+                              width: MediaQuery.of(context).size.width / 1.5,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            InfoCircle(_selectedUnit),
+                            CardTextInput(
+                              'Medida',
+                              amountSourceCtrl,
+                              width: MediaQuery.of(context).size.width / 3,
+                            ),
+                            SelectUnitDropDown(this._selectedUnit,
+                                this._units, this._updateSelectedUnit),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            InfoCircle(_selectedProportionalUnit),
+                            CardTextInput(
+                              'Medida de comparação',
+                              amountProportionalCtrl,
+                              width: MediaQuery.of(context).size.width / 3,
+                            ),
+                            SelectUnitDropDown(
+                                this._selectedUnit,
+                                this._units,
+                                this._updateSelectedProportionalUnit),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: new BoxDecoration(
+                                color: Colors.lightBlue,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                InfoCircle(
+                                  '$_selectedUnit / R\$',
+                                  width: 62.5,
+                                  height: 62.5,
+                                ),
+                                CardReadOnlyText(
+                                  'Preço proporcional',
+                                  this.viewModel.getProportionalResult(),
+                                  width:
+                                      MediaQuery.of(context).size.width / 2,
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ), //CARD Top Row
                   ],
                 ),
               ),
-            ),
-          ],
+              Container(
+                  width: double.infinity,
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: ButtonTheme(
+                      minWidth: MediaQuery.of(context).size.width / 2,
+                      height: 90,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                             topLeft: Radius.circular(20.0),
+                              bottomRight:  Radius.elliptical(
+                                  MediaQuery.of(context).size.width, 100.0)
+                          ),
+                      ),
+                      child: FlatButton(
+                        color: Color.fromARGB(255, 35, 168, 20),
+                        child: const Icon(
+                            Icons.calculate,
+                          color: Colors.white,
+                          size: 60
+                        ),
+                        onPressed: () {
+                          this.calculateCallback();
+                        },
+                      ),
+                    ),
+                  ))
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 }
@@ -212,14 +248,12 @@ class _SelectUnitDropDownState extends State<SelectUnitDropDown> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width / 3,
-      child: RaisedButton(
+      child: OutlinedButton(
         onPressed: () {
           _showUnitsBottomSheet(context, measureUnits, updateUnitCallback);
         },
         child: Text('Unidade: $selectedUnit'),
-        shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.blueAccent),
-            borderRadius: BorderRadius.circular(20.0)),
+
       ),
     );
   }
@@ -300,10 +334,7 @@ class CardTextInput extends StatelessWidget {
                   border: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black, width: 1.0)),
                 ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly
-                ]
-                ,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
             ),
           ],

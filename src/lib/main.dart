@@ -1,7 +1,5 @@
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:shop_proportions/domain/calculator/entities/app_currenty.entity.dart';
-import 'package:shop_proportions/domain/calculator/entities/price_calculator.root.dart';
 import 'package:shop_proportions/ui/calculator/pages/home.calculator.page.dart';
 
 void main() {
