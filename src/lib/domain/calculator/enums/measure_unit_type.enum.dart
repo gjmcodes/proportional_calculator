@@ -1,0 +1,4 @@
+enum MeasureUnitType{
+  MASS,
+  VOLUME
+}

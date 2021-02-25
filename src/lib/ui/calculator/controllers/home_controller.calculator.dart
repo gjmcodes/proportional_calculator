@@ -1,0 +1,18 @@
+import 'package:shop_proportions/domain/calculator/entities/price_calculator.root.dart';
+import 'package:shop_proportions/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
+
+class HomeController{
+
+  HomeCalculatorVM calculate(HomeCalculatorVM model){
+
+    var _proportionalPrice = PriceCalculatorRoot.getPriceBetweenUnits(model.originalPrice,
+        model.getOriginalAmount(), model.getDesiredAmount());
+    model.proportionalPrice = _proportionalPrice;
+
+    var _commonPrices = PriceCalculatorRoot.getCommonProportions(
+        model.originalPrice, model.getOriginalAmount());
+    model.commonProportionalPrices = _commonPrices;
+
+    return model;
+  }
+}
