@@ -4,12 +4,19 @@ import 'package:shop_proportions/domain/calculator/entities/price_amount_unit.en
 
 class HomeCalculatorVM{
 
-  double originalPrice;
-  double originalAmount;
-  double proportionalAmount;
+  double originalPrice = 0.0;
+  double originalAmount = 0.0;
+  double proportionalAmount = 0.0;
   MeasureUnit selectedOriginalUnit;
   MeasureUnit selectedProportionalUnit;
 
+  bool isValid(){
+    return this.originalPrice > 0
+        && this.selectedProportionalUnit != null
+        && this.selectedOriginalUnit != null
+        && this.originalAmount > 0
+        && this.proportionalAmount > 0;
+  }
   AmountUnit getOriginalAmount(){
     return AmountUnit(this.selectedOriginalUnit, this.originalAmount);
   }

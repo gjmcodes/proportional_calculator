@@ -3,11 +3,16 @@ import 'dart:io';
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_proportions/domain/calculator/entities/price_amount_unit.entity.dart';
+import 'package:shop_proportions/ui/@stores/calculator.store.dart';
 import 'package:shop_proportions/ui/calculator/controllers/home_controller.calculator.dart';
 import 'package:shop_proportions/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
 import 'package:shop_proportions/ui/calculator/widgets/input_card.calculator.dart';
 import 'package:shop_proportions/ui/calculator/widgets/proportions_list_card.calculator.dart';
+
+const String DECIMAL_SEPARATOR = ",";
+const String THOUSAND_SEPARATOR =".";
 
 class HomeCalculator extends StatefulWidget {
   @override
@@ -22,11 +27,11 @@ class _HomeCalculatorState extends State<HomeCalculator> {
 
   //TextControllers
   final TextEditingController priceSourceCtrl = MoneyMaskedTextController(
-      decimalSeparator: '.', thousandSeparator: ',', leftSymbol: 'R\$');
+      decimalSeparator: DECIMAL_SEPARATOR, thousandSeparator: THOUSAND_SEPARATOR, leftSymbol: 'R\$');
   final TextEditingController amountSourceCtrl =
-      MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',');
+      MoneyMaskedTextController(decimalSeparator: DECIMAL_SEPARATOR, thousandSeparator: THOUSAND_SEPARATOR);
   final TextEditingController amountProportionalCtrl =
-      MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',');
+      MoneyMaskedTextController(decimalSeparator: DECIMAL_SEPARATOR, thousandSeparator: THOUSAND_SEPARATOR);
 
   String proportionalPrice = "";
   List<PriceAmountUnit> proportionalPrices = <PriceAmountUnit>[];
@@ -61,6 +66,7 @@ class _HomeCalculatorState extends State<HomeCalculator> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(

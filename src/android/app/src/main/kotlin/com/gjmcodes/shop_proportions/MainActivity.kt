@@ -1,4 +1,4 @@
-package com.gjmcodes.shop_proportions
+package com.gjmcodes.pricemob
 
 import io.flutter.embedding.android.FlutterActivity
 

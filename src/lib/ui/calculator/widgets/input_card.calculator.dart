@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_proportions/domain/calculator/entities/measure_unit.entity.dart';
+import 'package:shop_proportions/ui/@stores/calculator.store.dart';
 import 'package:shop_proportions/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
 
 class InputCard extends StatefulWidget {
@@ -17,9 +19,8 @@ class InputCard extends StatefulWidget {
       this.amountProportionalCtrl, this.calculateCallback);
 
   @override
-  _InputCardState createState() => _InputCardState(
-      viewModel, priceSourceCtrl, amountSourceCtrl, amountProportionalCtrl
-  , calculateCallback);
+  _InputCardState createState() => _InputCardState(viewModel, priceSourceCtrl,
+      amountSourceCtrl, amountProportionalCtrl, calculateCallback);
 }
 
 class _InputCardState extends State<InputCard> {
@@ -30,6 +31,7 @@ class _InputCardState extends State<InputCard> {
   final HomeCalculatorVM viewModel;
   final Function calculateCallback;
 
+  CalculatorStore calculatorStore;
 
   _InputCardState(this.viewModel, this.priceSourceCtrl, this.amountSourceCtrl,
       this.amountProportionalCtrl, this.calculateCallback);
@@ -58,6 +60,7 @@ class _InputCardState extends State<InputCard> {
   @override
   void initState() {
     _selectedUnit = "-";
+    _selectedProportionalUnit = "-";
 
     priceSourceCtrl.addListener(_updatePriceSourceInput);
     amountSourceCtrl.addListener(_updateAmountSourceInput);
@@ -66,138 +69,145 @@ class _InputCardState extends State<InputCard> {
     super.initState();
   }
 
-  void _updateSelectedUnit(int index) {
+  String _updateSelectedUnit(int index) {
     setState(() {
-      _selectedUnit = _units[index].value;
-      viewModel.changeSelectedOriginalUnit(_units[index]);
+      var unit = _units[index];
+
+      _selectedUnit = unit.value;
+      viewModel.changeSelectedOriginalUnit(unit);
+      this.calculatorStore.changeSelectedOriginalUnit(unit);
     });
+    return _selectedUnit;
   }
 
   void _updateSelectedProportionalUnit(int index) {
     setState(() {
-      _selectedProportionalUnit = _units[index].value;
-      viewModel.changeSelectedProportionalUnit(_units[index]);
+      var unit = _units[index];
+      _selectedProportionalUnit = unit.value;
+      viewModel.changeSelectedProportionalUnit(unit);
+      this.calculatorStore.changeSelectedProportionalUnit(unit);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    this.calculatorStore = Provider.of<CalculatorStore>(context);
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(7.5, 0.0, 7.5, 0.0),
-      child: Container(
-        height: MediaQuery.of(context).size.height / 2,
-        width: MediaQuery.of(context).size.width,
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.elliptical(MediaQuery.of(context).size.width, 100.0)
-              )),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Column(
+      child: Column(
+        children: [
+          Container(
+            height: 375,
+            width: MediaQuery.of(context).size.width,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
                       children: [
-                        Row(
+                        Column(
                           children: [
-                            InfoCircle('R\$'),
-                            CardTextInput(
-                              'Valor do produto',
-                              priceSourceCtrl,
-                              width: MediaQuery.of(context).size.width / 1.5,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            InfoCircle(_selectedUnit),
-                            CardTextInput(
-                              'Medida',
-                              amountSourceCtrl,
-                              width: MediaQuery.of(context).size.width / 3,
-                            ),
-                            SelectUnitDropDown(this._selectedUnit,
-                                this._units, this._updateSelectedUnit),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            InfoCircle(_selectedProportionalUnit),
-                            CardTextInput(
-                              'Medida de comparação',
-                              amountProportionalCtrl,
-                              width: MediaQuery.of(context).size.width / 3,
-                            ),
-                            SelectUnitDropDown(
-                                this._selectedUnit,
-                                this._units,
-                                this._updateSelectedProportionalUnit),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: new BoxDecoration(
-                                color: Colors.lightBlue,
-                                borderRadius: BorderRadius.circular(10.0)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                            Row(
                               children: [
-                                InfoCircle(
-                                  '$_selectedUnit / R\$',
-                                  width: 62.5,
-                                  height: 62.5,
-                                ),
-                                CardReadOnlyText(
-                                  'Preço proporcional',
-                                  this.viewModel.getProportionalResult(),
-                                  width:
-                                      MediaQuery.of(context).size.width / 2,
+                                InfoCircle('R\$'),
+                                CardTextInput(
+                                  'Valor do produto',
+                                  priceSourceCtrl,
+                                  width: MediaQuery.of(context).size.width / 1.5,
                                 ),
                               ],
                             ),
-                          ),
-                        ),
+                            Row(
+                              children: [
+                                InfoCircle(_selectedUnit),
+                                CardTextInput(
+                                  'Medida',
+                                  amountSourceCtrl,
+                                  width: MediaQuery.of(context).size.width / 3,
+                                ),
+                                OriginalUnitButton(
+                                    this._units, this._updateSelectedUnit),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                InfoCircle(_selectedProportionalUnit),
+                                CardTextInput(
+                                  'Medida de comparação',
+                                  amountProportionalCtrl,
+                                  width: MediaQuery.of(context).size.width / 3,
+                                ),
+                                ProportionalUnitButton(this._units,
+                                    this._updateSelectedProportionalUnit),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: new BoxDecoration(
+                                    color: Colors.lightBlue,
+                                    borderRadius: BorderRadius.circular(10.0)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    InfoCircle(
+                                      '$_selectedUnit / R\$',
+                                      width: 62.5,
+                                      height: 62.5,
+                                    ),
+                                    CardReadOnlyText(
+                                      'Preço proporcional',
+                                      this.viewModel.getProportionalResult(),
+                                      width: MediaQuery.of(context).size.width / 2,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ), //CARD Top Row
                       ],
-                    ), //CARD Top Row
-                  ],
-                ),
-              ),
-              Container(
-                  width: double.infinity,
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: ButtonTheme(
-                      minWidth: MediaQuery.of(context).size.width / 2,
-                      height: 90,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                             topLeft: Radius.circular(20.0),
-                              bottomRight:  Radius.elliptical(
-                                  MediaQuery.of(context).size.width, 100.0)
-                          ),
-                      ),
-                      child: FlatButton(
-                        color: Color.fromARGB(255, 35, 168, 20),
-                        child: const Icon(
-                            Icons.calculate,
-                          color: Colors.white,
-                          size: 60
-                        ),
-                        onPressed: () {
-                          this.calculateCallback();
-                        },
-                      ),
                     ),
-                  ))
-            ],
+                  ),
+                  SizedBox(
+                    height: 60,
+                    child: Container(
+                      child: ElevatedButton(
+                          onPressed: () {
+                            this.calculateCallback();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.green,
+                            onPrimary: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(0.0)
+                            )
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.calculate,
+                                  color: Colors.white),
+                              const Text(
+                                'calcular',
+                                style: TextStyle(fontSize: 24),
+                              )
+                            ],
+                          )),
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -223,7 +233,61 @@ class InfoCircle extends StatelessWidget {
   }
 }
 
-class SelectUnitDropDown extends StatefulWidget {
+class OriginalUnitButton extends StatefulWidget {
+  final List<MeasureUnit> measureUnits;
+  final Function updateUnitCallback;
+
+  OriginalUnitButton(this.measureUnits, this.updateUnitCallback);
+
+  @override
+  _OriginalUnitButtonState createState() =>
+      _OriginalUnitButtonState(this.measureUnits, this.updateUnitCallback);
+}
+
+class _OriginalUnitButtonState extends State<OriginalUnitButton> {
+  final List<MeasureUnit> measureUnits;
+  final Function updateUnitCallback;
+
+  _OriginalUnitButtonState(this.measureUnits, this.updateUnitCallback);
+
+  @override
+  Widget build(BuildContext context) {
+    var store = Provider.of<CalculatorStore>(context);
+    String selectedUnit = store.selectedOriginalUnit?.value;
+
+    return SelectUnitDropDown(
+        selectedUnit, this.measureUnits, this.updateUnitCallback);
+  }
+}
+
+class ProportionalUnitButton extends StatefulWidget {
+  final List<MeasureUnit> measureUnits;
+  final Function updateUnitCallback;
+
+  ProportionalUnitButton(this.measureUnits, this.updateUnitCallback);
+
+  @override
+  _ProportionalUnitButtonState createState() =>
+      _ProportionalUnitButtonState(this.measureUnits, this.updateUnitCallback);
+}
+
+class _ProportionalUnitButtonState extends State<ProportionalUnitButton> {
+  final List<MeasureUnit> measureUnits;
+  final Function updateUnitCallback;
+
+  _ProportionalUnitButtonState(this.measureUnits, this.updateUnitCallback);
+
+  @override
+  Widget build(BuildContext context) {
+    var store = Provider.of<CalculatorStore>(context);
+    String selectedUnit = store.selectedProportionalUnit?.value;
+
+    return SelectUnitDropDown(
+        selectedUnit, this.measureUnits, this.updateUnitCallback);
+  }
+}
+
+class SelectUnitDropDown extends StatelessWidget {
   final String selectedUnit;
   final List<MeasureUnit> measureUnits;
   final Function updateUnitCallback;
@@ -232,28 +296,15 @@ class SelectUnitDropDown extends StatefulWidget {
       this.selectedUnit, this.measureUnits, this.updateUnitCallback);
 
   @override
-  _SelectUnitDropDownState createState() => _SelectUnitDropDownState(
-      this.selectedUnit, this.measureUnits, this.updateUnitCallback);
-}
-
-class _SelectUnitDropDownState extends State<SelectUnitDropDown> {
-  String selectedUnit;
-  List<MeasureUnit> measureUnits;
-  Function updateUnitCallback;
-
-  _SelectUnitDropDownState(
-      this.selectedUnit, this.measureUnits, this.updateUnitCallback);
-
-  @override
   Widget build(BuildContext context) {
+    var _text = selectedUnit == null ? "-" : selectedUnit;
     return Container(
       width: MediaQuery.of(context).size.width / 3,
       child: OutlinedButton(
         onPressed: () {
           _showUnitsBottomSheet(context, measureUnits, updateUnitCallback);
         },
-        child: Text('Unidade: $selectedUnit'),
-
+        child: Text('Unidade: $_text'),
       ),
     );
   }

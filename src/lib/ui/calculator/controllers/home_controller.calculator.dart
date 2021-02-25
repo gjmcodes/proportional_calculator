@@ -5,6 +5,8 @@ class HomeController{
 
   HomeCalculatorVM calculate(HomeCalculatorVM model){
 
+    if(!model.isValid())return model;
+
     var _proportionalPrice = PriceCalculatorRoot.getPriceBetweenUnits(model.originalPrice,
         model.getOriginalAmount(), model.getDesiredAmount());
     model.proportionalPrice = _proportionalPrice;
