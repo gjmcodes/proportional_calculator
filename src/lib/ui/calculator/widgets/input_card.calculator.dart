@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_proportions/domain/calculator/entities/measure_unit.entity.dart';
-import 'package:shop_proportions/ui/@stores/calculator.store.dart';
-import 'package:shop_proportions/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
+import 'package:pricemob/domain/calculator/entities/measure_unit.entity.dart';
+import 'package:pricemob/ui/@stores/calculator.store.dart';
+import 'package:pricemob/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
 
 class InputCard extends StatefulWidget {
   final MoneyMaskedTextController priceSourceCtrl;

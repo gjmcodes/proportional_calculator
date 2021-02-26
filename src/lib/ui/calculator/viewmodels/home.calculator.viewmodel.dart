@@ -1,6 +1,6 @@
-import 'package:shop_proportions/domain/calculator/entities/amount_unit.entity.dart';
-import 'package:shop_proportions/domain/calculator/entities/measure_unit.entity.dart';
-import 'package:shop_proportions/domain/calculator/entities/price_amount_unit.entity.dart';
+import 'package:pricemob/domain/calculator/entities/amount_unit.entity.dart';
+import 'package:pricemob/domain/calculator/entities/measure_unit.entity.dart';
+import 'package:pricemob/domain/calculator/entities/price_amount_unit.entity.dart';
 
 class HomeCalculatorVM{
 

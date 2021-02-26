@@ -1,5 +1,5 @@
-import 'package:shop_proportions/domain/calculator/entities/measure_unit.entity.dart';
-import 'package:shop_proportions/domain/calculator/enums/measure_unit_type.enum.dart';
+import 'package:pricemob/domain/calculator/entities/measure_unit.entity.dart';
+import 'package:pricemob/domain/calculator/enums/measure_unit_type.enum.dart';
 
 class AmountUnit{
   MeasureUnit unit;

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:shop_proportions/domain/calculator/enums/measure_unit_type.enum.dart';
+import 'package:pricemob/domain/calculator/enums/measure_unit_type.enum.dart';
 
 const CONVERTION_BASE_MULTIPLIER = 10;
 const CONVERTION_UNIT_MULTIPLIER = 3;

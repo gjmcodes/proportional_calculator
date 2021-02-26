@@ -4,12 +4,12 @@ import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_proportions/domain/calculator/entities/price_amount_unit.entity.dart';
-import 'package:shop_proportions/ui/@stores/calculator.store.dart';
-import 'package:shop_proportions/ui/calculator/controllers/home_controller.calculator.dart';
-import 'package:shop_proportions/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
-import 'package:shop_proportions/ui/calculator/widgets/input_card.calculator.dart';
-import 'package:shop_proportions/ui/calculator/widgets/proportions_list_card.calculator.dart';
+import 'package:pricemob/domain/calculator/entities/price_amount_unit.entity.dart';
+import 'package:pricemob/ui/@stores/calculator.store.dart';
+import 'package:pricemob/ui/calculator/controllers/home_controller.calculator.dart';
+import 'package:pricemob/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
+import 'package:pricemob/ui/calculator/widgets/input_card.calculator.dart';
+import 'package:pricemob/ui/calculator/widgets/proportions_list_card.calculator.dart';
 
 const String DECIMAL_SEPARATOR = ",";
 const String THOUSAND_SEPARATOR =".";
@@ -69,74 +69,76 @@ class _HomeCalculatorState extends State<HomeCalculator> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-         /* AdmobBanner(
-            adUnitId: getTopBannerId(),
-            adSize: AdmobBannerSize.ADAPTIVE_BANNER(
-              width: MediaQuery.of(context).size.width.toInt(),
-            ),
-          ), */
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: Colors.blueGrey[50],
-              child: ListView(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    child: Column(children: [
-                      Column(
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            child: InputCard(
-                                this.viewModel,
-                                this.priceSourceCtrl,
-                                this.amountSourceCtrl,
-                                this.amountProportionalCtrl,
-                                this.calculate),
-                          ), //CARD Container
-                       //BUTTON
-                        ],
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.all(0.0),
-                        child: Builder(
-                          builder: (context) {
-                            if (this.viewModel.commonProportionalPrices ==
-                                    null ||
-                                viewModel.commonProportionalPrices.length <= 0)
-                              return Container();
-
-                            return Container(
-                                width: double.infinity,
-                                height: (100 * this.proportionalPrices.length)
-                                    .toDouble(),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: new ProportionsListCard(
-                                      priceProportion: this.proportionalPrices),
-                                ));
-                          },
-                        ),
-                      ), //List
-                    ]),
-                  )
-                ],
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AdmobBanner(
+              adUnitId: getTopBannerId(),
+              adSize: AdmobBannerSize.ADAPTIVE_BANNER(
+                width: MediaQuery.of(context).size.width.toInt(),
               ),
             ),
-          ),
-         /* AdmobBanner(
-            adUnitId: getBottomBannerId(),
-            adSize: AdmobBannerSize.ADAPTIVE_BANNER(
-              width: MediaQuery.of(context).size.width.toInt(),
+            Expanded(
+              flex: 1,
+              child: Container(
+                color: Colors.blueGrey[50],
+                child: ListView(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      child: Column(children: [
+                        Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              child: InputCard(
+                                  this.viewModel,
+                                  this.priceSourceCtrl,
+                                  this.amountSourceCtrl,
+                                  this.amountProportionalCtrl,
+                                  this.calculate),
+                            ), //CARD Container
+                         //BUTTON
+                          ],
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: Builder(
+                            builder: (context) {
+                              if (this.viewModel.commonProportionalPrices ==
+                                      null ||
+                                  viewModel.commonProportionalPrices.length <= 0)
+                                return Container();
+
+                              return Container(
+                                  width: double.infinity,
+                                  height: (100 * this.proportionalPrices.length)
+                                      .toDouble(),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: new ProportionsListCard(
+                                        priceProportion: this.proportionalPrices),
+                                  ));
+                            },
+                          ),
+                        ), //List
+                      ]),
+                    )
+                  ],
+                ),
+              ),
             ),
-          ), */
-        ],
+            AdmobBanner(
+              adUnitId: getBottomBannerId(),
+              adSize: AdmobBannerSize.ADAPTIVE_BANNER(
+                width: MediaQuery.of(context).size.width.toInt(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

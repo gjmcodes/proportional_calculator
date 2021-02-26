@@ -1,15 +1,15 @@
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_proportions/ui/@stores/calculator.store.dart';
-import 'package:shop_proportions/ui/calculator/pages/home.calculator.page.dart';
+import 'package:pricemob/ui/@stores/calculator.store.dart';
+import 'package:pricemob/ui/calculator/pages/home.calculator.page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final testDevices = [
     '118a7e6d-5eae-4089-8874-b47c4e72cad7',
   ];
-  //Admob.initialize(testDeviceIds: testDevices);
+  Admob.initialize(testDeviceIds: testDevices);
   runApp(MyApp());
 }
 

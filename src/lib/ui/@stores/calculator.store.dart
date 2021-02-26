@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-import 'package:shop_proportions/domain/calculator/entities/measure_unit.entity.dart';
+import 'package:pricemob/domain/calculator/entities/measure_unit.entity.dart';
 
 part 'calculator.store.g.dart';
 

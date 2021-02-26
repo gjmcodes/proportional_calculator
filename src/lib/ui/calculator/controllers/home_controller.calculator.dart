@@ -1,5 +1,5 @@
-import 'package:shop_proportions/domain/calculator/entities/price_calculator.root.dart';
-import 'package:shop_proportions/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
+import 'package:pricemob/domain/calculator/entities/price_calculator.root.dart';
+import 'package:pricemob/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
 
 class HomeController{
 

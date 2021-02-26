@@ -1,4 +1,4 @@
-import 'package:shop_proportions/domain/calculator/entities/amount_unit.entity.dart';
+import 'package:pricemob/domain/calculator/entities/amount_unit.entity.dart';
 
 class PriceAmountUnit{
   double price;
