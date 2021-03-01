@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pricemob/domain/calculator/entities/price_amount_unit.entity.dart';
+import 'package:pricemob/ui/@currency/currency_services.dart';
 
 class ProportionsListCard extends StatelessWidget {
   final List<PriceAmountUnit> priceProportion;
@@ -21,7 +22,7 @@ class ProportionsListCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'R\$' + proportion.getPrice(),
+                CurrencyServices.getFormattedValue(proportion.price),
                 style: TextStyle(
                   fontSize: 20,
                 ),

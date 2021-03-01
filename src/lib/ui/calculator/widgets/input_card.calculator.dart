@@ -2,39 +2,36 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:pricemob/ui/@currency/currency_services.dart';
+import 'package:pricemob/ui/calculator/keys/keys.dart';
 import 'package:provider/provider.dart';
 import 'package:pricemob/domain/calculator/entities/measure_unit.entity.dart';
 import 'package:pricemob/ui/@stores/calculator.store.dart';
 import 'package:pricemob/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
 
 class InputCard extends StatefulWidget {
-  final MoneyMaskedTextController priceSourceCtrl;
-  final MoneyMaskedTextController amountSourceCtrl;
-  final MoneyMaskedTextController amountProportionalCtrl;
 
   final HomeCalculatorVM viewModel;
   final Function calculateCallback;
+  final Function resetCallback;
 
-  InputCard(this.viewModel, this.priceSourceCtrl, this.amountSourceCtrl,
-      this.amountProportionalCtrl, this.calculateCallback);
+  InputCard(this.viewModel,  this.calculateCallback
+      , this.resetCallback);
 
   @override
-  _InputCardState createState() => _InputCardState(viewModel, priceSourceCtrl,
-      amountSourceCtrl, amountProportionalCtrl, calculateCallback);
+  _InputCardState createState() => _InputCardState(viewModel, calculateCallback
+  , resetCallback);
 }
 
 class _InputCardState extends State<InputCard> {
-  final MoneyMaskedTextController priceSourceCtrl;
-  final MoneyMaskedTextController amountSourceCtrl;
-  final MoneyMaskedTextController amountProportionalCtrl;
-
   final HomeCalculatorVM viewModel;
   final Function calculateCallback;
+  final Function resetCallback;
 
   CalculatorStore calculatorStore;
 
-  _InputCardState(this.viewModel, this.priceSourceCtrl, this.amountSourceCtrl,
-      this.amountProportionalCtrl, this.calculateCallback);
+  _InputCardState(this.viewModel, this.calculateCallback
+      , this.resetCallback);
 
   final List<MeasureUnit> _units = MeasureUnit.internationalUnits;
 
@@ -42,19 +39,19 @@ class _InputCardState extends State<InputCard> {
   String _selectedProportionalUnit = "";
 
   _updatePriceSourceInput() {
-    if (priceSourceCtrl.text != null && priceSourceCtrl.text != "")
-      viewModel.originalPrice = priceSourceCtrl.numberValue;
+    if (this.viewModel.priceSourceCtrl.text != null && this.viewModel.priceSourceCtrl.text != "")
+      viewModel.originalPrice = this.viewModel.priceSourceCtrl.numberValue;
   }
 
   _updateAmountSourceInput() {
-    if (amountSourceCtrl.text != null && amountSourceCtrl.text != "")
-      viewModel.originalAmount = amountSourceCtrl.numberValue;
+    if (this.viewModel.amountSourceCtrl.text != null && this.viewModel.amountSourceCtrl.text != "")
+      viewModel.originalAmount = this.viewModel.amountSourceCtrl.numberValue;
   }
 
   _updateAmountProportionalInput() {
-    if (amountProportionalCtrl.text != null &&
-        amountProportionalCtrl.text != "")
-      viewModel.proportionalAmount = amountProportionalCtrl.numberValue;
+    if (this.viewModel.amountProportionalCtrl.text != null &&
+        this.viewModel.amountProportionalCtrl.text != "")
+      viewModel.proportionalAmount = this.viewModel.amountProportionalCtrl.numberValue;
   }
 
   @override
@@ -62,9 +59,9 @@ class _InputCardState extends State<InputCard> {
     _selectedUnit = "-";
     _selectedProportionalUnit = "-";
 
-    priceSourceCtrl.addListener(_updatePriceSourceInput);
-    amountSourceCtrl.addListener(_updateAmountSourceInput);
-    amountProportionalCtrl.addListener(_updateAmountProportionalInput);
+    this.viewModel.priceSourceCtrl.addListener(_updatePriceSourceInput);
+    this.viewModel.amountSourceCtrl.addListener(_updateAmountSourceInput);
+    this.viewModel.amountProportionalCtrl.addListener(_updateAmountProportionalInput);
 
     super.initState();
   }
@@ -115,10 +112,10 @@ class _InputCardState extends State<InputCard> {
                           children: [
                             Row(
                               children: [
-                                InfoCircle('R\$'),
+                                InfoCircle(CurrencyServices.currencySymbol),
                                 CardTextInput(
                                   'Valor do produto',
-                                  priceSourceCtrl,
+                                  this.viewModel.priceSourceCtrl,
                                   width: MediaQuery.of(context).size.width / 1.5,
                                 ),
                               ],
@@ -128,11 +125,12 @@ class _InputCardState extends State<InputCard> {
                                 InfoCircle(_selectedUnit),
                                 CardTextInput(
                                   'Medida',
-                                  amountSourceCtrl,
+                                  this.viewModel.amountSourceCtrl,
                                   width: MediaQuery.of(context).size.width / 3,
                                 ),
                                 OriginalUnitButton(
-                                    this._units, this._updateSelectedUnit),
+                                    this._units, this._updateSelectedUnit
+                                , Key(SOURCE_UNIT_SELECTOR_KEY)),
                               ],
                             ),
                             Row(
@@ -141,11 +139,12 @@ class _InputCardState extends State<InputCard> {
                                 InfoCircle(_selectedProportionalUnit),
                                 CardTextInput(
                                   'Medida de comparação',
-                                  amountProportionalCtrl,
+                                  this.viewModel.amountProportionalCtrl,
                                   width: MediaQuery.of(context).size.width / 3,
                                 ),
                                 ProportionalUnitButton(this._units,
-                                    this._updateSelectedProportionalUnit),
+                                    this._updateSelectedProportionalUnit
+                                , Key(PROPORTIONAL_UNIT_SELECTOR_KEY)),
                               ],
                             ),
                             Padding(
@@ -158,7 +157,7 @@ class _InputCardState extends State<InputCard> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     InfoCircle(
-                                      '$_selectedUnit / R\$',
+                                      '$_selectedUnit / ${CurrencyServices.currencySymbol}',
                                       width: 62.5,
                                       height: 62.5,
                                     ),
@@ -176,32 +175,68 @@ class _InputCardState extends State<InputCard> {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 60,
-                    child: Container(
-                      child: ElevatedButton(
-                          onPressed: () {
-                            this.calculateCallback();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.green,
-                            onPrimary: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(0.0)
-                            )
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.calculate,
-                                  color: Colors.white),
-                              const Text(
-                                'calcular',
-                                style: TextStyle(fontSize: 24),
-                              )
-                            ],
-                          )),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 60,
+                        child: Container(
+                          child: ElevatedButton(
+                              onPressed: () {
+                                this.resetCallback();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  primary: Color.fromARGB(255, 222, 218, 218),
+                                  onPrimary: Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(0.0)
+                                  )
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.dangerous,
+                                      color: Colors.grey),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                    child: const Text(
+                                      'apagar',
+                                      style: TextStyle(fontSize: 24),
+                                    ),
+                                  )
+                                ],
+                              )),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 60,
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Container(
+                          child: ElevatedButton(
+                              onPressed: () {
+                                this.calculateCallback();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.green,
+                                onPrimary: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(0.0)
+                                )
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.calculate,
+                                      color: Colors.white),
+                                  const Text(
+                                    'calcular',
+                                    style: TextStyle(fontSize: 24),
+                                  )
+                                ],
+                              )),
+                        ),
+                      ),
+                    ],
                   )
                 ],
               ),
@@ -236,8 +271,11 @@ class InfoCircle extends StatelessWidget {
 class OriginalUnitButton extends StatefulWidget {
   final List<MeasureUnit> measureUnits;
   final Function updateUnitCallback;
+  final Key key;
 
-  OriginalUnitButton(this.measureUnits, this.updateUnitCallback);
+  OriginalUnitButton(this.measureUnits, this.updateUnitCallback
+      , this.key)
+  : super(key: key);
 
   @override
   _OriginalUnitButtonState createState() =>
@@ -253,7 +291,7 @@ class _OriginalUnitButtonState extends State<OriginalUnitButton> {
   @override
   Widget build(BuildContext context) {
     var store = Provider.of<CalculatorStore>(context);
-    String selectedUnit = store.selectedOriginalUnit?.value;
+    String selectedUnit = store.viewModel.selectedOriginalUnit?.value;
 
     return SelectUnitDropDown(
         selectedUnit, this.measureUnits, this.updateUnitCallback);
@@ -263,8 +301,10 @@ class _OriginalUnitButtonState extends State<OriginalUnitButton> {
 class ProportionalUnitButton extends StatefulWidget {
   final List<MeasureUnit> measureUnits;
   final Function updateUnitCallback;
+  final Key key;
 
-  ProportionalUnitButton(this.measureUnits, this.updateUnitCallback);
+  ProportionalUnitButton(this.measureUnits, this.updateUnitCallback, this.key)
+    : super(key: key);
 
   @override
   _ProportionalUnitButtonState createState() =>
@@ -280,7 +320,7 @@ class _ProportionalUnitButtonState extends State<ProportionalUnitButton> {
   @override
   Widget build(BuildContext context) {
     var store = Provider.of<CalculatorStore>(context);
-    String selectedUnit = store.selectedProportionalUnit?.value;
+    String selectedUnit = store.viewModel.selectedProportionalUnit?.value;
 
     return SelectUnitDropDown(
         selectedUnit, this.measureUnits, this.updateUnitCallback);
@@ -399,8 +439,10 @@ void _showUnitsBottomSheet(
     context, List<MeasureUnit> units, Function updateCallback) {
   Widget _buildListTile(BuildContext context, int index) {
     return Container(
+      key: Key(UNITS_SELECTION_SHEET_KEY),
       height: 50,
       child: ListTile(
+        key:  Key('select-list-' + units[index].value),
         leading: Icon(Icons.add),
         title: Center(child: Text(units[index].value)),
         onTap: () {

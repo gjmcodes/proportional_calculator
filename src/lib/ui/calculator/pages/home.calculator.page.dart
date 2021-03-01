@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:pricemob/ui/@currency/currency_services.dart';
+import 'package:pricemob/ui/calculator/keys/keys.dart';
 import 'package:provider/provider.dart';
 import 'package:pricemob/domain/calculator/entities/price_amount_unit.entity.dart';
 import 'package:pricemob/ui/@stores/calculator.store.dart';
@@ -11,9 +13,6 @@ import 'package:pricemob/ui/calculator/viewmodels/home.calculator.viewmodel.dart
 import 'package:pricemob/ui/calculator/widgets/input_card.calculator.dart';
 import 'package:pricemob/ui/calculator/widgets/proportions_list_card.calculator.dart';
 
-const String DECIMAL_SEPARATOR = ",";
-const String THOUSAND_SEPARATOR =".";
-
 class HomeCalculator extends StatefulWidget {
   @override
   _HomeCalculatorState createState() => _HomeCalculatorState();
@@ -21,17 +20,9 @@ class HomeCalculator extends StatefulWidget {
 
 class _HomeCalculatorState extends State<HomeCalculator> {
   GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
-  var viewModel = new HomeCalculatorVM();
   final homeController = new HomeController();
-  AdmobBannerSize bannerSize;
-
-  //TextControllers
-  final TextEditingController priceSourceCtrl = MoneyMaskedTextController(
-      decimalSeparator: DECIMAL_SEPARATOR, thousandSeparator: THOUSAND_SEPARATOR, leftSymbol: 'R\$');
-  final TextEditingController amountSourceCtrl =
-      MoneyMaskedTextController(decimalSeparator: DECIMAL_SEPARATOR, thousandSeparator: THOUSAND_SEPARATOR);
-  final TextEditingController amountProportionalCtrl =
-      MoneyMaskedTextController(decimalSeparator: DECIMAL_SEPARATOR, thousandSeparator: THOUSAND_SEPARATOR);
+  HomeCalculatorVM viewModel;
+  CalculatorStore calculatorStore;
 
   String proportionalPrice = "";
   List<PriceAmountUnit> proportionalPrices = <PriceAmountUnit>[];
@@ -40,10 +31,18 @@ class _HomeCalculatorState extends State<HomeCalculator> {
     setState(() {
       FocusScope.of(context).unfocus();
 
-      this.viewModel = homeController.calculate(viewModel);
-      this.proportionalPrice = viewModel.proportionalPriceFixed();
-      this.proportionalPrices = viewModel.commonProportionalPrices;
+      this.calculatorStore.viewModel = homeController.calculate(this.calculatorStore.viewModel);
+      this.proportionalPrice = this.calculatorStore.viewModel.proportionalPriceFixed();
+      this.proportionalPrices = this.calculatorStore.viewModel.commonProportionalPrices;
+      print(this.proportionalPrices.length);
     });
+  }
+
+  void reset(){
+    setState(() {
+      this.calculatorStore.resetCalculator();
+    });
+
   }
 
   String getTopBannerId() {
@@ -64,8 +63,18 @@ class _HomeCalculatorState extends State<HomeCalculator> {
     return null;
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    CurrencyServices.setCurrencyFormat(context);
+
+    this.calculatorStore = Provider.of<CalculatorStore>(context);
+    this.calculatorStore.buildViewModel();
+
+    this.viewModel = calculatorStore.viewModel;
+
+
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -75,6 +84,7 @@ class _HomeCalculatorState extends State<HomeCalculator> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             AdmobBanner(
+              key: Key(ADS_TOP_BANNER_KEY),
               adUnitId: getTopBannerId(),
               adSize: AdmobBannerSize.ADAPTIVE_BANNER(
                 width: MediaQuery.of(context).size.width.toInt(),
@@ -95,10 +105,8 @@ class _HomeCalculatorState extends State<HomeCalculator> {
                               width: double.infinity,
                               child: InputCard(
                                   this.viewModel,
-                                  this.priceSourceCtrl,
-                                  this.amountSourceCtrl,
-                                  this.amountProportionalCtrl,
-                                  this.calculate),
+                                  this.calculate,
+                                  this.reset),
                             ), //CARD Container
                          //BUTTON
                           ],
@@ -108,9 +116,9 @@ class _HomeCalculatorState extends State<HomeCalculator> {
                           padding: const EdgeInsets.all(0.0),
                           child: Builder(
                             builder: (context) {
-                              if (this.viewModel.commonProportionalPrices ==
+                              if (this.calculatorStore.viewModel.commonProportionalPrices ==
                                       null ||
-                                  viewModel.commonProportionalPrices.length <= 0)
+                                  this.calculatorStore.viewModel.commonProportionalPrices.length <= 0)
                                 return Container();
 
                               return Container(
@@ -132,6 +140,7 @@ class _HomeCalculatorState extends State<HomeCalculator> {
               ),
             ),
             AdmobBanner(
+              key: Key(ADS_BOTTOM_BANNER_KEY),
               adUnitId: getBottomBannerId(),
               adSize: AdmobBannerSize.ADAPTIVE_BANNER(
                 width: MediaQuery.of(context).size.width.toInt(),
