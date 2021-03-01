@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:pricemob/ui/@stores/calculator.store.dart';
 import 'package:pricemob/ui/calculator/pages/home.calculator.page.dart';
 
+import 'AppLocalizations.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final testDevices = [
@@ -25,6 +27,15 @@ class MyApp extends StatelessWidget {
         Provider<CalculatorStore>.value(value: CalculatorStore())
       ],
       child: MaterialApp(
+        supportedLocales: [
+          Locale('en', 'US'),
+          Locale('pt', 'BR'),
+        ],
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(

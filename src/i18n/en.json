@@ -1,0 +1,11 @@
+{
+  "productPrice": "Price",
+  "quantity": "Quantity",
+  "quantityComparison": "Quantity of comparison",
+  "unit": "Unit",
+  "proportionalPrice": "Proportional price",
+  "clear": "clear",
+  "calculate": "calculate",
+  "proportionalResult": "{0} = {1} of {2}",
+  "commonPricesTitle": "Common Proportional Prices"
+}

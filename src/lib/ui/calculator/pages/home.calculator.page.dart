@@ -13,6 +13,8 @@ import 'package:pricemob/ui/calculator/viewmodels/home.calculator.viewmodel.dart
 import 'package:pricemob/ui/calculator/widgets/input_card.calculator.dart';
 import 'package:pricemob/ui/calculator/widgets/proportions_list_card.calculator.dart';
 
+import '../../../AppLocalizations.dart';
+
 class HomeCalculator extends StatefulWidget {
   @override
   _HomeCalculatorState createState() => _HomeCalculatorState();
@@ -34,7 +36,6 @@ class _HomeCalculatorState extends State<HomeCalculator> {
       this.calculatorStore.viewModel = homeController.calculate(this.calculatorStore.viewModel);
       this.proportionalPrice = this.calculatorStore.viewModel.proportionalPriceFixed();
       this.proportionalPrices = this.calculatorStore.viewModel.commonProportionalPrices;
-      print(this.proportionalPrices.length);
     });
   }
 
@@ -83,13 +84,14 @@ class _HomeCalculatorState extends State<HomeCalculator> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AdmobBanner(
+
+            /*AdmobBanner(
               key: Key(ADS_TOP_BANNER_KEY),
               adUnitId: getTopBannerId(),
               adSize: AdmobBannerSize.ADAPTIVE_BANNER(
                 width: MediaQuery.of(context).size.width.toInt(),
               ),
-            ),
+            ),*/
             Expanded(
               flex: 1,
               child: Container(
@@ -139,13 +141,13 @@ class _HomeCalculatorState extends State<HomeCalculator> {
                 ),
               ),
             ),
-            AdmobBanner(
+           /* AdmobBanner(
               key: Key(ADS_BOTTOM_BANNER_KEY),
               adUnitId: getBottomBannerId(),
               adSize: AdmobBannerSize.ADAPTIVE_BANNER(
                 width: MediaQuery.of(context).size.width.toInt(),
               ),
-            ),
+            ) ,*/
           ],
         ),
       ),

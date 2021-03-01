@@ -9,6 +9,8 @@ import 'package:pricemob/domain/calculator/entities/measure_unit.entity.dart';
 import 'package:pricemob/ui/@stores/calculator.store.dart';
 import 'package:pricemob/ui/calculator/viewmodels/home.calculator.viewmodel.dart';
 
+import '../../../AppLocalizations.dart';
+
 class InputCard extends StatefulWidget {
 
   final HomeCalculatorVM viewModel;
@@ -114,7 +116,7 @@ class _InputCardState extends State<InputCard> {
                               children: [
                                 InfoCircle(CurrencyServices.currencySymbol),
                                 CardTextInput(
-                                  'Valor do produto',
+                                  AppLocalizations.of(context).translate('productPrice'),
                                   this.viewModel.priceSourceCtrl,
                                   width: MediaQuery.of(context).size.width / 1.5,
                                 ),
@@ -124,7 +126,7 @@ class _InputCardState extends State<InputCard> {
                               children: [
                                 InfoCircle(_selectedUnit),
                                 CardTextInput(
-                                  'Medida',
+                                    AppLocalizations.of(context).translate('quantity'),
                                   this.viewModel.amountSourceCtrl,
                                   width: MediaQuery.of(context).size.width / 3,
                                 ),
@@ -138,7 +140,7 @@ class _InputCardState extends State<InputCard> {
                               children: [
                                 InfoCircle(_selectedProportionalUnit),
                                 CardTextInput(
-                                  'Medida de comparação',
+                                  AppLocalizations.of(context).translate('quantityComparison'),
                                   this.viewModel.amountProportionalCtrl,
                                   width: MediaQuery.of(context).size.width / 3,
                                 ),
@@ -162,8 +164,8 @@ class _InputCardState extends State<InputCard> {
                                       height: 62.5,
                                     ),
                                     CardReadOnlyText(
-                                      'Preço proporcional',
-                                      this.viewModel.getProportionalResult(),
+                                      AppLocalizations.of(context).translate('proportionalPrice'),
+                                      this.viewModel.getProportionalResult(context),
                                       width: MediaQuery.of(context).size.width / 2,
                                     ),
                                   ],
@@ -199,8 +201,8 @@ class _InputCardState extends State<InputCard> {
                                       color: Colors.grey),
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                                    child: const Text(
-                                      'apagar',
+                                    child: Text(
+                                      AppLocalizations.of(context).translate('clear'),
                                       style: TextStyle(fontSize: 24),
                                     ),
                                   )
@@ -228,8 +230,8 @@ class _InputCardState extends State<InputCard> {
                                 children: [
                                   const Icon(Icons.calculate,
                                       color: Colors.white),
-                                  const Text(
-                                    'calcular',
+                                  Text(
+                                    AppLocalizations.of(context).translate('calculate'),
                                     style: TextStyle(fontSize: 24),
                                   )
                                 ],
@@ -344,7 +346,7 @@ class SelectUnitDropDown extends StatelessWidget {
         onPressed: () {
           _showUnitsBottomSheet(context, measureUnits, updateUnitCallback);
         },
-        child: Text('Unidade: $_text'),
+        child: Text('${AppLocalizations.of(context).translate('unit')}: $_text'),
       ),
     );
   }

@@ -5,6 +5,8 @@ import 'package:pricemob/domain/calculator/entities/measure_unit.entity.dart';
 import 'package:pricemob/domain/calculator/entities/price_amount_unit.entity.dart';
 import 'package:pricemob/ui/@currency/currency_services.dart';
 
+import '../../../AppLocalizations.dart';
+
 class HomeCalculatorVM{
 
   double originalPrice = 0.0;
@@ -88,9 +90,13 @@ class HomeCalculatorVM{
     && this.selectedOriginalUnit != null;
   }
 
-  String getProportionalResult(){
+  String getProportionalResult(BuildContext context){
     if(!hasProportionalPrice())return "";
 
+    var _resultStr = AppLocalizations.of(context).translate('proportionalResult');
+    return _resultStr.replaceAll("{0}", this.getProportionalAmountString())
+              .replaceAll("{1}", '${CurrencyServices.currencySymbol} ${this.proportionalPriceFixed()}')
+              .replaceAll("{2}", this.getOriginalAmountString());
     return this.getProportionalAmountString() +  " = R\$"
         + this.proportionalPriceFixed() + " de " + this.getOriginalAmountString();
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pricemob/domain/calculator/entities/price_amount_unit.entity.dart';
 import 'package:pricemob/ui/@currency/currency_services.dart';
 
+import '../../../AppLocalizations.dart';
+
 class ProportionsListCard extends StatelessWidget {
   final List<PriceAmountUnit> priceProportion;
   ProportionsListCard({this.priceProportion});
@@ -57,11 +59,11 @@ class ProportionsListCard extends StatelessWidget {
             color: Colors.white,
           ),
           width: double.infinity,
-          child: const Padding(
+          child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
-              child: const Text(
-                'Preços Propocionais Comuns',
+              child: Text(
+                AppLocalizations.of(context).translate('commonPricesTitle'),
                 style: TextStyle(fontSize: 24),
               ),
             ),
