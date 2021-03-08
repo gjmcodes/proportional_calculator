@@ -230,9 +230,12 @@ class _InputCardState extends State<InputCard> {
                                 children: [
                                   const Icon(Icons.calculate,
                                       color: Colors.white),
-                                  Text(
-                                    AppLocalizations.of(context).translate('calculate'),
-                                    style: TextStyle(fontSize: 24),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                    child: Text(
+                                      AppLocalizations.of(context).translate('calculate'),
+                                      style: TextStyle(fontSize: 24),
+                                    ),
                                   )
                                 ],
                               )),
